@@ -3,6 +3,21 @@ import './styles.css';
 document.getElementById('app').innerHTML = `
 <h1>Vanilla study again</h1>
 `;
+//배열 array
+//이름과 인덱스로 참조되는 정렬된 값의 잡합
+//각각의 값 - 배열 요소(element), 위치 나타내는 숫자 -인덱스(index)
+//배열 선언은 [] 안에 감싼다.
+
+//배열 형태
+let array = [1, 2, 3];
+
+//객체배열의 형태
+let objects = [
+  { name: '멍멍이', age: 10 },
+  { name: '야옹이', age: 5 }
+];
+
+//1. 배열의 선언
 
 //함수 function
 //함수도 하나의 데이터 타입이다.
@@ -18,17 +33,18 @@ document.write(sum); //3
 
 //함수를 만들 때는 function키워드를 사용해야 한다.
 //어떤 값을 받아올 지 정하는데 이를 파라미터(매개변수)라 한다.
-//-> 인수로 전달된 값을 함수 내부에서 사용할 수 있게 해주는 변수
+//-> 인수로 전달된 값을 함수 내부에서 사용할 수 있게(내부로 전달) 해주는 변수
 /* function 함수명 (매개변수1, 매개변수2,....) {
   코드 블록 - 실행문
 } 
 
 호출하는 법은 함수명();
 인수를 담아서 호출할 수도 있다. 함수명(인수1, 인수2..);
+인수(함수 호출 시 함수로 값을 전달해주는 값)
 */
 
 function add(a, b) {
-  //a,b는 매개변수수
+  //a,b는 매개변수
   return a + b; //반환문
   //return 키워드를 사용하면 함수의 결과물을 출력할 수 있다.
   //return을 하면, 함수는 끝나므로 뒤에 나오는 코드는 호출이 되지 않는다.
@@ -51,13 +67,119 @@ document.write('<br>' + sqr(4));
 document.write('<br>' + sqrNum(4));
 
 //파라미터 사용해보기 -연습
+//함수를 정의할 때 매개변수의 타입을 따로 명시하지 않는다.
+//함수를 호출할 때도 인수로 전달된 값의 타입검사 역시 하지 않는다.
+//만약 함수 정의보다 적은 인수가 전달되면, 오류 발생 x, 대신 전달되지 않은 매개변수에 undefined 값을 설정
 function hello(name) {
   console.log('hello ' + name + '!');
 }
 
 hello('min'); //hello min!
 
-//es6 템플릿 리터럴 사용해보기
+//매개변수에 인수 전달
+function addNum(x, y, z) {
+  console.log(x, y, z);
+  //1,2,3 전달
+  //1,2,undefined 전달
+  //1,undefined,undefined 전달
+  //undefined,undefined,undefined 전달
+  return x + y + z;
+}
+
+console.log(addNum(1, 2, 3)); //6
+console.log(addNum(1, 2)); //NaN
+console.log(addNum(1)); //NaN
+console.log(addNum()); //NaN
+//전달되지 않은 매개변수는 undefined로 자동 설정되어
+//-> 계산하지 못하므로 NaN이 뜬다.
+
+function addNum2(x, y, z) {
+  if (x === undefined)
+    // 함수 호출시 x에 해당하는 인수가 전달되지 않은 경우
+    x = 0; // 변수 x의 값을 undefined에서 0으로 변경함.
+  if (y === undefined)
+    // 함수 호출시 y에 해당하는 인수가 전달되지 않은 경우
+    y = 0; // 변수 y의 값을 undefined에서 0으로 변경함.
+  if (z === undefined)
+    // 함수 호출시 z에 해당하는 인수가 전달되지 않은 경우
+    z = 0; // 변수 z의 값을 undefined에서 0으로 변경함.
+  return x + y + z;
+}
+
+console.log(addNum2(1, 2, 3)); // 6
+console.log(addNum2(1, 2)); // 3
+console.log(addNum2(1)); // 1
+console.log(addNum2()); // 0
+
+//arguments 객체
+//함수 정의보다 더 많은 인수가 전달되면, 매개변수에 대입되지 못한 인수를 참조할 방법 x
+//-> 이 때 arguments 객체를 이용하면 인수의 총 개수를 확인하거나, 인수에 바로 접근 가능
+//-> 이 객체는 함수가 호출될 때 전달된 인수를 배열 형태로 저장하고 있기 때문
+
+function addNum3() {
+  let sum = 0;
+  console.log(arguments);
+  //{0: 1, 1: 2, 2: 3}
+  //{0: 1, 1: 2}
+  //{0: 1}
+  //{}
+  for (let i = 0; i < arguments.length; i++) {
+    sum += arguments[i];
+  }
+  return sum;
+}
+
+console.log(addNum3(1, 2, 3)); //6
+console.log(addNum3(1, 2)); //3
+console.log(addNum3(1)); //1
+console.log(addNum3()); //0
+
+//*es6 디폴트 매개변수와 나머지 매개변수
+//IE를 제외한 최신 브라우저에서는 지원O
+
+//1. 디폴트 매개변수
+//함수 호출 시 정의된 인수를 전달하지 않을 경우 사용할 기본값
+
+function mul(a, b = 1) {
+  // 인수가 한 개만 전달되면 나머지 매개변수의 값을 언제나 1로 설정해 줌.
+  return a * b;
+}
+
+mul(3, 4); // 12
+mul(3); // 3
+
+//2. 나머지 매개변수(rest parameter)
+//생략 접두사 ... 을 사용해 특정 위치의 인수부터 마지막 인수까지 한번에 지정 가능
+function sub1() {
+  var firstNum = arguments[0]; //첫 번째 인수
+  console.log(firstNum);
+  for (var i = 0; i < arguments.length - 1; i++) {
+    // 두 번째부터 마지막 인수까지를
+    firstNum -= arguments[i + 1]; // 뺌.
+    console.log(firstNum);
+  }
+  return firstNum;
+}
+
+sub1(10, 2, 3); // 10 - 2 - 3 = 5
+sub1(10, 1, 5, 8); // 10 - 1 - 5 - 8 = -4
+
+//나머지 매개변수 사용시
+//첫번째 인수는 firstNum에
+//나머지 인수는 배열 restArgs에 저장
+function sub3(firstNum, ...restArgs) {
+  console.log(firstNum + ' 나머지는 배열로');
+  console.log(...restArgs); //{2,3} {1,5,8}
+  for (var i = 0; i < restArgs.length; i++) {
+    firstNum -= restArgs[i];
+  }
+  return firstNum;
+}
+
+sub3(10, 2, 3); // 10 - 2 - 3 = 5
+sub3(10, 1, 5, 8); // 10 - 1 - 5 - 8 = -4
+
+//*es6 템플릿 리터럴 사용해보기
 //문자열 조합시 + 사용하는데, 이 대신 사용할 수 있다.
 // `` 백틱을 사용
 // 변수를 사용하고 싶을 때는 ${변수명}
@@ -68,7 +190,7 @@ function hello2(name) {
 
 hello2('kim'); //hello kim!
 
-//es6 화살표 함수
+//*es6 화살표 함수
 //함수를 선언하는 방식 중 하나
 //function대신 => 문자 사용해서 함수 구현한다.
 // let 함수명 = (파라미터) => {코드블록}
@@ -83,9 +205,255 @@ console.log(add(1, 2)); //3
 add = (a, b) => a + b;
 console.log(add(1, 3)); //4
 
-// **알아보기 **
 /* 일반 function함수의 this와 화살표 함수의 this는 다르다*/
+// *function으로 만든 함수의 this
+//-> 함수를 호출한 객체를 참조한다.
+//함수가 호출될 때 호출한 객체에 의해 동적으로 결정된다.
+//-> this.sound와 같이 사용 가능
 
+// *화살표함수의 this
+//-> 화살표 함수의 this는 정적으로 바인딩되어 객체를 참조하지 못한다.
+//정적 바인딩(함수가 정의될 때 결정되어 변하지 x)
+//-> 대신 바로 바깥 범위에서 this를 찾는다. (전역 범위에서 함수가 정의된 경우, window 참조)
+
+//변수 유효 변위
+//자바스크립트에서 객체, 함수 모두 변수이다.
+//변수의 유효범위는 해당 변수가 접근할 수 있는 변수, 객체 그리고 함수의 집합을 의미
+
+//1. 지역 변수 - local variable
+//2. 전역 변수 - global variable
+
+//지역변수 - 함수 내 선언된 변수
+//지역이라는 명칭과 일치하게, 변수가 선언된 함수 내에서만 유효, 함수 종료시 메모리에서 삭제
+//매개변수도 함수 내 정의되는 지역변수처럼 동작한다.
+
+function localNum() {
+  let num = 10; //지역 변수
+  console.log(`함수 내부에서 변수 타입은 ${typeof num}`); //number
+}
+
+localNum();
+console.log('함수 호출 뒤 변수 num타입은 ' + typeof num); //undefined
+console.log('선언 안된 변수의 타입은 ' + typeof home); //undefined
+
+//전역변수 - 함수 외부에서 선언된 변수
+//프로그램 어느 영역에서나 접근 가능, 웹페이지를 닫아야 메모리에서 사라짐
+//let 전역변수
+let num2 = 10;
+
+function globalNum() {
+  console.log(`함수 내부에서 num2값은 ${num2}`); //10
+  num2 = 20; //전역 변수 num2값을 함수 내부에서 변경
+}
+
+function globalNum2() {
+  console.log(num2); //20
+  num2 = 30; //위에서 바뀐 전역 변수 num2값을 함수 내부에서 변경
+}
+
+var num3 = 1;
+function globalNum3() {
+  let num2 = 50;
+  var num3 = 2;
+  console.log('함수 내 지역변수 num2값은 ' + num2);
+  console.log('함수 내 전역변수 num2값은 ' + window.num2);
+  //전역변수 참조시 undefined가 출력됨 - 전역변수를 let으로 선언해서.
+  //let으로 선언한 변수는 블록 스코프를 가진다.
+  //따라서 함수 내에 선언한 지역변수가 전역변수를 가리게 되는 일시적 사각지대("시간상 사각지대"(Temporal Dead Zone, TDZ))에 놓인다.
+  //-> 그래서 undefined가 출력됨
+  console.log(num3);
+  console.log(`함수 내 var로 선언한 전역변수 num3값은 ${window.num3}`);
+}
+
+globalNum();
+globalNum2();
+globalNum3();
+console.log('함수 호출 뒤 변수 num2값은 ' + num2); //30
+
+//const 전역변수
+const numConst = 5;
+
+function globalNumConst() {
+  console.log(`함수 내부에서 numConst값은 ${numConst}`); //5
+  //numConst = 10; //const로 전역변수가 선언되었기 때문에 재할당은 되지 않는다.
+}
+
+function globalNumConst2() {
+  //동일 이름으로 지역변수로 선언하는 것은 가능
+  const numConst = 10;
+  console.log(`함수 내부에서 선언한 numConst값은 ${numConst}`);
+}
+
+globalNumConst();
+globalNumConst2();
+console.log('함수 호출 뒤 변수 numConst값은 ' + numConst); //5
+
+//함수의 유효범위
+//블록이란 코드 내에서 {}로 둘러쌓인 부분으로, 블록 내 정의된 변수는 블록 외부에서 접근 x
+//이렇게 블록을 기준으로 하는 유효범위를 블록단위 유효범위라 한다.
+//-> 자바스크립트는 함수를 블록 대신 사용한다.
+
+//1. 전역함수
+//전역 함수는 모든 전역변수와 전역 함수에 접근 가능
+var x = 10,
+  y = 20;
+function sub() {
+  return x - y; //10, 전역 변수 x,y에 접근
+}
+document.write(`<br> ${sub()} <br>`);
+
+function parent() {
+  var x = 1,
+    y = 2;
+  function add() {
+    return x + y; //지역변수 x,y 접근근
+  }
+  return add(); //3
+}
+document.write(parent() + '<br>');
+
+let x1 = 10,
+  y1 = 20;
+function sub2() {
+  return x1 - y1; //10, 전역 변수 x,y에 접근
+}
+document.write(`<br> ${sub2()} <br>`);
+
+function parent2() {
+  let x1 = 1,
+    y1 = 2;
+  function add() {
+    return x1 + y1; //지역변수 x,y 접근근
+  }
+  return add(); //3
+}
+document.write(parent2() + '<br>');
+
+//미리 정의된 전역 함수
+//사용자의 편의에 따라 여러 전역함수가 미리 정의되어 제공된다.
+//-> 어떤 타입의 객체든 사용가능
+document.write(
+  `<a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects" target="_blank">표준 내장 객체</a><br>`
+);
+
+//1. eval()
+//문자열로 표현된 자바스크립트 코드 실행해준다.
+//** mdn에서 사용하지 않는 게 좋다 함
+
+//2. isFinite()
+//주어진 값이 유한한 수인지 검사해 결과 반환(true/false)
+console.log(isFinite(100)); //true
+console.log(isFinite(null)); //true
+console.log(isFinite('')); //true
+console.log(isFinite(-Infinity)); //false
+console.log(isFinite(Infinity)); //false
+console.log(isFinite(NaN)); //false
+console.log(isFinite(undefined)); //false
+// 양, 음 Infinity, NaN, undefined 빼고 true
+
+//3. isNaN()
+//전달된 값이 NaN인지 검사해 결과 반환 - 결과 boolean
+console.log(isNaN(null)); //false
+console.log(isNaN(undefined)); //true
+console.log(isNaN(123)); //false
+console.log(isNaN('')); //false, 빈 문자열은 0으로 변환
+console.log('문자열 123은 숫자가 아닌가? ' + isNaN('123'));
+//->false로 문자열 123을 자동으로 숫자 123으로 바꾼다.
+
+//*es6에서는 Number.isNaN() 메소드 사용을 권장함
+//isNaN() 자체로는 함수의 인수가 Number 형이 아니면, 숫자로 강제 변경 후 NaN인지 판단한다.
+//따라서 의도되지 않은 변경이 이뤄질 수 있으므로, Number.isNaN() 권장함
+
+//4. parseFloat()
+//문자열 파싱해 부동 소수점 수로 반환한다.
+console.log(parseFloat('문자열')); //NaN
+console.log(parseFloat('3.14')); //3.14
+
+//5. parseInt()
+//문자열 파싱해 정수로 반환한다.
+//parseInt(string)
+//paresInt(string,radix) radix는 진법
+console.log(parseInt('문자열')); //NaN
+console.log(parseInt('3.14')); //3
+console.log(parseInt('314abc')); //314
+
+//두번째 인수로 특정 진법을 전달시, 해당 진법에 맞는 정수로 반환한다.
+console.log(parseInt('10', 2)); //2
+
+//6. decodeURI(), decodeURIComponent()
+//encodeURI() 또는 다른 방법으로 만든 URI를 해독한다.
+//encodeURIComponent() 또는 다른 방법으로 만든 URI를 해독한다.
+/*
+decodeURI(해독할URI);
+decodeURIComponent(해독할URI);
+*/
+
+//7. encodeURI(), encodeURIComponent()
+//URI에서 주소표시하는 특수문자를 제외하고, 모든 문자를 이스케이프 시퀀스처리해 부호화한다.
+//encodeURIComponent()에서는 encodeURI()에서 부호화하지 않은 모든 문자까지 이스케이프 시퀀스 처리한다.
+/*
+encodeURI(부호화할URI);
+encodeURIComponent(부호화할URI);
+*/
+var uri = 'http://google.com/search.php?name=홍길동&city=서울';
+var enc1 = encodeURI(uri);
+var enc2 = encodeURIComponent(uri);
+document.write(enc1 + '<br>' + enc2 + '<br><br>');
+
+var dec1 = decodeURI(enc1);
+var dec2 = decodeURIComponent(enc2);
+document.write(dec1 + '<br>' + dec2);
+
+//8. Number()
+//전달받은 객체의 값을 숫자로 변환
+//Number(객체);
+
+Number('123'); // 123
+Number('123 초콜릿'); // NaN
+Number(true); // 1
+Number(false); // 0
+
+//9. String()
+//전달받은 객체의 값을 문자열로 변환
+//String(객체);
+
+String(Boolean(1)); // true
+String(Boolean(0)); // false
+String(123); // 123
+
+//함수 호이스팅
+//함수 유효범위는 함수 안에서 선언된 모든 변수는 함수에서 유효하다는 의미
+//이 유효 범위의 적용은 변수가 선언되기 전에도 똑같이 적용된다.
+//-> 이것을 함수 호이스팅이라 함
+//-> 함수 내 있는 모든 변수 선언은 함수의 맨 위로 이동된 것처럼 동작한다.
+
+let globalNum4 = 3;
+function printNum() {
+  // 호이스팅되어 let globalNum4; 선언부가 위로 올라온다.
+  //-> 선언만 되고, 초기화 안된 상태
+
+  // 1) undefined 출력
+  //함수 내 지역변수 선언 전 globalNum4의 값이 undefined가 된다.
+  //-> 왜냐하면! 함수 호이스팅 때문에
+  //-> let변수는 초기화하기 전에는 읽거나 쓸 수 없음
+  document.write('지역 변수 선언 전 globalNum4값 ' + globalNum4 + '<br>'); //값 할당x
+  let globalNum4 = 5;
+  // 호이스팅되어 globalNum4 = 5; 가 된다.
+  // 2) 5출력
+  document.write('지역 변수 선언 후 globalNum4값 ' + globalNum4 + '<br>'); //값 할당o
+}
+
+function printNum2() {
+  //3) 3출력
+  //-> 같은 변수명의 지역변수가 선언되지 않았을 때는 함수 내에서 전역변수가 참조된다.
+  //let num = 5;
+  document.write(`지역변수 선언 없을 때 값 ${globalNum4}<br>`);
+}
+
+printNum();
+printNum2();
+
+/* ***************** */
 //객체
 //객체는 key와 value로 구성된 프로퍼티의 정렬되지 않은 집합
 //프로퍼티의 값으로 함수가 올 수도 있다. -> 메소드
@@ -121,22 +489,16 @@ document.write('올해는 ' + day.getFullYear() + '년입니다.');
 //Object.creat() 메소드는 지정된 프로토타입의 객체와 프로퍼티를 가지고, 새로운 객체를 만들어준다.
 /* Object.create(프로토타입객체[ , 새로운객체의프로퍼티1, 새로운객체의프로퍼티2, ...]); */
 
-const People = {
+const Person = {
   fullName: function () {
     return this.firstName + ' ' + this.lastName;
   }
 };
 
-//const person1 = Object.create(Person);
-// person1.firstName = 'John';
-// person1.lastName = 'Doe';
-const People1 = Object.create(People, {
-  firstName: 'John',
-  lastName: 'Doe'
-  // x: { firstName: 'John', lastName: 'Doe' }
-});
-
-console.log(People1.firstName); // 출력결과: "John Doe"
+const person1 = Object.create(Person);
+person1.firstName = 'John';
+person1.lastName = 'Doe';
+console.log(person1.fullName()); // 출력결과: "John Doe"
 
 //함수에서 객체 파라미터로 받기
 function print(hero) {
@@ -201,7 +563,7 @@ dog.say2();
 //정적 바인딩(함수가 정의될 때 결정되어 변하지 x)
 //-> 대신 바로 바깥 범위에서 this를 찾는다. (전역 범위에서 함수가 정의된 경우, window 참조)
 
-function Person() {
+function Person2() {
   this.age = 0;
 
   setInterval(() => {
@@ -210,7 +572,7 @@ function Person() {
   }, 1000);
 }
 
-var p = new Person();
+var p = new Person2();
 
 //Getter 함수와 Setter 함수
 //사용하는 이유
